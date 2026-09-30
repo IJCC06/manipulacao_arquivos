@@ -1,5 +1,5 @@
-def adicionar_frases():
-    with open("txts/frase.txt", "a", encoding="utf-8") as arquivo:
+def adicionar_frases(file):
+    with open(f"txts/{file}.txt", "a", encoding="utf-8") as arquivo:
         arquivo.write(input("Digite uma frase: ") +"\n")
 
-adicionar_frases()
+adicionar_frases("frase")
