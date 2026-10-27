@@ -12,6 +12,7 @@ def buscar_treinador(nome):
                 return linha
     return None
 
+
 def listar_pokemons_treinador():
     nome = input("Digite o nome do treinador que deseja buscar: ").strip()
 
@@ -34,6 +35,7 @@ def listar_pokemons_treinador():
             print(f"- {p['nome']}")
     return pokemons
 
+
 def contar_pokemons():
     nome = input("Digite o nome do treinador: ").strip()
 
@@ -50,6 +52,7 @@ def contar_pokemons():
 
     print(f"{treinador['nome']} possui {total} Pokémon.\n")
     return total
+
 
 def pokemon_maior_nivel():
     nome = input("Digite o nome do treinador: ")
@@ -70,19 +73,46 @@ def pokemon_maior_nivel():
                     maior_pokemon = linha
     print(f"O Pokémon de maior nível de {treinador["nome"]} é {maior_pokemon["nome"]}, de nível {maior_nivel}")
 
+
 def pokemon_menor_nivel():
     nome = input("Digite o nome do treinador: ")
-
     treinador = buscar_treinador(nome)
     if treinador is None:
         print("Treinador não encontrado!")
         return None
-    
+
+    menor_nivel = None
+    menor_pokemon = None
+    with open(ARQUIVO_P, "r", newline="", encoding="utf-8") as arq:
+        for linha in csv.DictReader(arq):
+            if linha["treinador"].strip().lower() == treinador["nome"].strip().lower():
+                nivel = int(linha["nivel"])
+                if menor_nivel is None or nivel < menor_nivel:
+                    menor_nivel = nivel
+                    menor_pokemon = linha
+    print(f"O Pokémon de menor nível de {treinador["nome"]} é {menor_pokemon["nome"]}, de nível {menor_nivel}")
+
+
+def listar_pokemon_por_tipo():
+    with open(ARQUIVO_P, "r", newline="", encoding="utf-8") as arq:
+        pokemons = list(csv.DictReader(arq))
+
+        tipos = sorted({linha["tipo"] for linha in pokemons})
+        print("Tipos Disponíveis:\n")
+        for tipo in tipos:
+            print("- " + tipo)
+
+        escolha = input("\nDigite o tipo escolhido: ").strip().lower()
+        print(f"\nPokémons do tipo {escolha}:\n")
+
+        for linha in pokemons:
+            if linha["tipo"].lower() == escolha:
+                print("- " + linha["nome"])
 
 
 def menu():
     while True:
-        print("===== POKÉMON DOS TREINADORES =====")
+        print("\n===== POKÉMON DOS TREINADORES =====")
         print("1 - Listar Pokémon de um treinador")
         print("2 - Contar Pokémon de um treinador")
         print("3 - Mostrar Pokémon de maior nível")
@@ -94,11 +124,15 @@ def menu():
 
         if opcao == "0":
             break
-        if opcao == "1":
+        elif opcao == "1":
             listar_pokemons_treinador()
-        if opcao == "2":
+        elif opcao == "2":
             contar_pokemons()
-        if opcao == "3":
+        elif opcao == "3":
             pokemon_maior_nivel()
+        elif opcao == "4":
+            pokemon_menor_nivel()
+        elif opcao == "5":
+            listar_pokemon_por_tipo()
 
 menu()
